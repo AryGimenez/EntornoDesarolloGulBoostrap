@@ -1,0 +1,35 @@
+{
+  "name": "entornodesarrollobustrapt",
+  "version": "1.0.0",
+  "description": "Entorno para desarrollo con Gulp y Bustrapt",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\u0016https://github.com/AryGimenez/EntornoDesarrolloGulpBootstrap.git"
+  },
+  "author": "Ary Gimenez",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^4.5.3",
+    "font-awesome": "^4.7.0",
+    "gulp-htmlmin": "^5.0.1",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.0.1",
+    "browser-sync": "^2.26.13",
+    "cssnano": "^4.1.10",
+    "gulp": "^4.0.2",
+    "gulp-cache-bust": "^1.4.1",
+    "gulp-imagemin": "^7.1.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^9.0.0",
+    "gulp-purgecss": "^3.0.0",
+    "gulp-sass": "^4.1.0",
+    "postcss": "^8.1.4"
+  }
+}
