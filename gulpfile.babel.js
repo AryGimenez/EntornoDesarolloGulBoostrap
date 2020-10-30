@@ -8,8 +8,8 @@ import plumber from 'gulp-plumber';
 
 
 // Variables Babel Para el codigo JavaScript de produccion
-// import babel from 'gulp-babel';
-// import terser from 'gulp-terser';
+import babel from 'gulp-babel';
+import terser from 'gulp-terser';
 import concat from 'gulp-concat';
 
 // Para html
@@ -46,36 +46,41 @@ const cssPlugins = [
     autoprefixer()
 ]
 
-
-
 // Tarea para JavaScript
-// gulp.task('babel', ()=>{
-    // return gulp
-    // .src('./src/js/*.js') // Directorio de donde voy obtener los archivos
+gulp.task('babel', ()=>{
+    return gulp
+    .src([  // Directorio de donde voy obtener los archivos
+        './src/mi-js/*.js'// Los codigos JavaSript usados por mi
+        ,'./node_modules/bootstrap/dist/js/bootstrap.min.js' // los codigos JavaScript usados por boostrpat
+        ,'./node_modules/jquery/dist/jquery.min.js' // jQuery 
+        ,'./node_modules/popper.js/dist/umd/popper.min.js' // Popper
+    ]) 
+    
     // .papa para concatenar metodos que no pertenescan a gulp
-    // .pipe(plumber()) // Para impedir que el codigo caiga 
-    // .pipe(concat('Script-index.js')) // Cocatena todo el contenido de el sirectorio seleccionado en el archivo pasado por parametro
-    // .pipe(babel())
-    // .pipe(terser()) // esto sirve para ofuscar el codigo 
-    // .pipe(gulp.dest('./public/js')) // Destino donde guarda el contendo de el archivo
-// });
-
-
-
+    .pipe(plumber()) // Para impedir que el codigo caiga 
+    .pipe(concat('Script-index.js')) // Cocatena todo el contenido de el sirectorio seleccionado en el archivo pasado por parametro
+    .pipe(babel())
+    .pipe(terser()) // esto sirve para ofuscar el codigo 
+    .pipe(gulp.dest('./public/js')) // Destino donde guarda el contendo de el archivo
+    .pipe(gulp.dest('./src/js')) // Destino donde guarda el contendo de el archivo
+});
 
 // Tarea para trabajar con SASS
 gulp.task('sass', ()=>{
     return gulp
-    .src('./node_modules/boostrap/scss/bootstrap.scss',
-        './src/scss/*.scss')
+    .src([
+        './node_modules/bootstrap/scss/bootstrap.scss'
+        ,'./src/scss/*.scss'
+    ])
     .pipe(plumber()) // impide que el codigo caiga
     .pipe( // Colocol los parmaetros 
         sass({
             outputStyle: 'compact' // entrega un codigo mimificado
         })
     )
+    .pipe(concat('sytle-min.css')) // Concatena el CSS en un solo archivo
     .pipe(stream()) // Es para inhectar el css en el codigo
-    .pipe(gulp.dest('./public/scss'))
+    .pipe(gulp.dest('./src/css'))
 
 });
 
@@ -90,7 +95,6 @@ gulp.task('purgCss', () => {
     })) 
 })
 
-
 // Formatear imagenes para el navegador 
 gulp.task('imagen', ()=>{
     console.log("Entro");
@@ -104,17 +108,25 @@ gulp.task('imagen', ()=>{
 
 })
 
-
-
 // metodos para formatear css 
 gulp.task('styles', ()=> {
    return gulp
-   .src('./src/css/*.css')
+   .src([
+       './src/css/*.css'
+       ,'./node_modules/font-awesome/css/font-awesome.min.css' // Librerias par iconos
+    ])
    .pipe(plumber()) // impide que el codigo caiga
    .pipe(concat('sytle-min.css')) // Concatena el CSS en un solo archivo
    .pipe(postcss(cssPlugins)) // aca le pasamos lo Plugins
    .pipe(stream()) // Es para inyectar el css en el codigo 
    .pipe(gulp.dest('./public/css')) // Destino 
+});
+
+gulp.task('fonts', ()=> {
+    return gulp.src ('./node_modules/font-awesome/fonts/*')
+        .pipe(gulp.dest('./src/fonts'))
+        .pipe(gulp.dest('./public/fonts'))
+
 });
 
 
@@ -141,11 +153,14 @@ gulp.task('default', () => {
     // gulp.watch('./src/js/*.js', gulp.series('babel'))// Escucha si hay cambi en diriectorio Js
     
     gulp.watch('./src/*.html', gulp.series('html-min')).on('change', reload); // Fa a la tarea 
-    gulp.watch('./src/scss/**/*.scss', gulp.series('sass')).on('change', reload);
+    gulp.watch([
+            './src/scss/**/*.scss', 
+            './node_modules/bootstrap/scss/bootstrap.scss'], 
+        gulp.series('sass')).on('change', reload);
     gulp.watch('./src/css/*.css', gulp.series('styles')).on('change', reload);
+    gulp.watch('./node_modules/font-awesome/fonts/*', gulp.series('fonts')).on('change', reload);
 
   // levanta un servidor con los datos que se encuentran en public
-
   server({
       server: './public'
     });
